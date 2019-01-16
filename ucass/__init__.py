@@ -1,6 +1,7 @@
 from time import sleep
 from gpiozero import DigitalOutputDevice
 import spidev
+import struct
 
 
 class _UCASS(object):
@@ -43,9 +44,44 @@ class _UCASS(object):
 
     def read_config_vars(self):
         self.command_byte(0x3C)
+        self.bbs = []
         raw = []
         for i in range(38):
             sleep(0.00001)
             buf = self.spi.xfer(0x06)
             raw.append(buf)
         self._cs.on()
+        for i in range(16):
+            self.bbs.append(byte_to_int16(raw[i*2], raw[i*2+1]))
+        self.gsc = byte_to_float(raw[32], raw[33], raw[34], raw[35])
+        self.id = raw[37]
+
+    def read_histogram_data(self):
+        self.command_byte(0x30)
+        self.hist = []
+        raw = []
+        index = 0
+        for i in range(43):
+            sleep(0.00001)
+            buf = self.spi.xfer(0x06)
+            raw.append(buf)
+        for i in range(16):
+            self.hist.append(byte_to_int16(raw[i*2], raw[i*2+1]))
+            index = index+2
+        for i in range(4):
+            self.mtof.append(raw[index])
+            index = index+1
+        self.period = byte_to_int16(raw[36], raw[37])
+        self.checksum = byte_to_int16(raw[38], raw[39])
+        self.reject_glitch = raw[40]
+        self.reject_ltof = raw[41]
+        self.reject_ratio = raw[42]
+
+
+def byte_to_int16(lsb, msb):
+    return (msb << 8) | lsb
+
+
+def byte_to_float(b1, b2, b3, b4):
+    arr = bytearray([b1, b2, b3, b4])
+    return struct.unpack('<f', arr)
