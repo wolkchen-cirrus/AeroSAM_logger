@@ -6,7 +6,7 @@ import struct
 
 class _UCASS(object):
     """
-    A UCASS Object to be used as an SPI slave
+    A UCASS Object to be used as an SPI slave, uses SPI 0 by default
     :param cs_gpio: Which GPIO pin is the chip select (slave select) for this UCASS unit
     """
     def __init__(self, cs_gpio):
