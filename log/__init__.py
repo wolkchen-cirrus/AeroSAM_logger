@@ -27,8 +27,9 @@ class _LogFile(object):
                 break
         return path_name
 
-    def write_data_log(self, time, temp, hum, pres, lat, lon, alt, counts, tof, period, c_sum, glitch, l_tof, rej_rat):
-        data_array = [time, temp, hum, pres, lat, lon, alt, counts, tof, period, c_sum, glitch, l_tof, rej_rat]
+    def write_data_log(self, time, pres, lat, lon, alt, vz, temp, hum, counts,
+                       tof, period, c_sum, glitch, l_tof, rej_rat):
+        data_array = [time, pres, lat, lon, alt, vz, temp, hum, counts, tof, period, c_sum, glitch, l_tof, rej_rat]
         log = open(self.name, "a+")
         data_array = ",".join(str(i) for i in data_array)
         log.write(data_array)
@@ -48,11 +49,11 @@ class _LogFile(object):
         bb_str = ",".join(str(i) for i in bbs)
         log.write(bb_str)
         log.write(',')
-        log.write(gsc)
+        log.write(str(gsc))
         log.write(',')
-        log.write(ucass_id)
+        log.write(str(ucass_id))
         log.write('\n')
-        log.write("time,temp,hum,pres,lat,lon,alt,b1,b2,b3,b4,b5,b6,b7,b8,b9,b10,b11,b12,b13,b14,b15,b1ToF,b3ToF"
+        log.write("time,temp,hum,pres,lat,lon,alt,vz,b1,b2,b3,b4,b5,b6,b7,b8,b9,b10,b11,b12,b13,b14,b15,b1ToF,b3ToF"
                   ",b7ToF,period,CSum,glitch,longToF,RejRat\n")
         log.flush()
         log.close()
