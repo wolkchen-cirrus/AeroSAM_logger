@@ -17,7 +17,7 @@ if __name__ == '__main__':
     while True:
         super_sonde.read_histogram_data()
         t_deg_c = met.read_fp07da802n(temp_cs)
-        rh_true = met.read_hih4000(hum_cs,t_deg_c)
+        rh_true = met.read_hih4000(hum_cs, t_deg_c)
         log_file.write_data_log(0, 0, 0, 0, 0, 0, t_deg_c, rh_true, super_sonde.hist, super_sonde.mtof,
                                 super_sonde.period, super_sonde.checksum, super_sonde.reject_glitch,
                                 super_sonde.reject_ltof, super_sonde.reject_ratio)
