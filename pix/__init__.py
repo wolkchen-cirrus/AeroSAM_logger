@@ -2,7 +2,7 @@ from pymavlink import mavutil
 import time
 
 
-class _MavlinkConnection(object):
+class MavlinkConnection(object):
     """
     An object to represent a connection with an FC via the MAVLINK protocol
     """

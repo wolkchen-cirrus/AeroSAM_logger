@@ -4,7 +4,7 @@ import spidev
 import struct
 
 
-class _UCASS(object):
+class UCASS(object):
     """
     A UCASS Object to be used as an SPI slave, uses SPI 0 by default
     :param cs_gpio: Which GPIO pin is the chip select (slave select) for this UCASS unit
@@ -15,7 +15,7 @@ class _UCASS(object):
         self.spi.open(0, 0)
         self.spi.mode(1)
         self.spi.max_speed_hz = 500000
-        self._cs = DigitalOutputDevice(cs_gpio, initial_value=True)
+        self.cs = DigitalOutputDevice(cs_gpio, initial_value=True)
 
         self.info_string = []
         self.bbs = []
@@ -30,7 +30,7 @@ class _UCASS(object):
         self.reject_ltof = 0
 
     def command_byte(self, command):
-        self._cs.off()
+        self.cs.off()
         self.spi.xfer([command])
         sleep(0.01)
 
@@ -40,7 +40,7 @@ class _UCASS(object):
             sleep(0.00001)
             buf = self.spi.xfer(0x06)
             self.info_string.append(buf)
-        self._cs.on()
+        self.cs.on()
 
     def read_config_vars(self):
         self.command_byte(0x3C)
@@ -50,7 +50,7 @@ class _UCASS(object):
             sleep(0.00001)
             buf = self.spi.xfer(0x06)
             raw.append(buf)
-        self._cs.on()
+        self.cs.on()
         for i in range(16):
             self.bbs.append(byte_to_int16(raw[i*2], raw[i*2+1]))
         self.gsc = byte_to_float(raw[32], raw[33], raw[34], raw[35])
@@ -76,6 +76,7 @@ class _UCASS(object):
         self.reject_glitch = raw[40]
         self.reject_ltof = raw[41]
         self.reject_ratio = raw[42]
+        self.cs.on()
 
 
 def byte_to_int16(lsb, msb):

@@ -1,13 +1,17 @@
 <component name="ProjectDictionaryState">
   <dictionary name="jgirdwood">
     <words>
+      <w>aero</w>
       <w>baudrate</w>
       <w>gpio</w>
+      <w>gpiozero</w>
+      <w>jgirdwood</w>
       <w>ltof</w>
       <w>mavlink</w>
       <w>mtof</w>
       <w>readdata</w>
       <w>showmessages</w>
+      <w>sonde</w>
       <w>spidev</w>
       <w>ucass</w>
       <w>udpout</w>

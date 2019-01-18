@@ -1,7 +1,7 @@
 import os
 
 
-class _LogFile(object):
+class LogFile(object):
     """
     An object representing a log file to store data
     :param base_name: Basic file name to be created i.e. tuna_01, tuna_02, etc.
