@@ -13,7 +13,7 @@ class UCASS(object):
 
         self.spi = spidev.SpiDev()
         self.spi.open(0, 0)
-        self.spi.mode(1)
+        self.spi.mode = 1
         self.spi.max_speed_hz = 500000
         self.cs = DigitalOutputDevice(cs_gpio, initial_value=True)
 

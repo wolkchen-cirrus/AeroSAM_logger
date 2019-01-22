@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="AeroSAM_logger",
-    version="0.0.1",
+    version="0.0.2",
     author="Joseph Girdwood",
     author_email="j.girdwood@herts.ac.uk",
     description="Package for use on a raspberry pi zero, to log MET data from UH-AeroSAM1",
