@@ -16,8 +16,9 @@ class UCASS(object):
         self.spi.mode = 1
         self.spi.max_speed_hz = 500000
         self.cs = DigitalOutputDevice(cs_gpio, initial_value=True)
+        self.cs.on()
 
-        self.info_string = []
+        self.info_string = ""
         self.bbs = []
         self.hist = []
         self.mtof = []
@@ -31,24 +32,24 @@ class UCASS(object):
 
     def command_byte(self, command):
         self.cs.off()
-        self.spi.xfer([command])
+        self.spi.xfer(command)
         sleep(0.01)
 
     def read_info_string(self):
-        self.command_byte(0x3F)
+        self.command_byte([0x3F])
         for i in range(60):
             sleep(0.00001)
-            buf = self.spi.xfer(0x06)
-            self.info_string.append(buf)
+            buf = self.spi.xfer([0x06])[0]
+            self.info_string += chr(buf)
         self.cs.on()
 
     def read_config_vars(self):
-        self.command_byte(0x3C)
+        self.command_byte([0x3C])
         self.bbs = []
         raw = []
         for i in range(38):
             sleep(0.00001)
-            buf = self.spi.xfer(0x06)
+            buf = self.spi.xfer([0x06])[0]
             raw.append(buf)
         self.cs.on()
         for i in range(16):
@@ -57,13 +58,14 @@ class UCASS(object):
         self.id = raw[37]
 
     def read_histogram_data(self):
-        self.command_byte(0x30)
+        self.command_byte([0x30])
         self.hist = []
+        self.mtof = []
         raw = []
         index = 0
         for i in range(43):
             sleep(0.00001)
-            buf = self.spi.xfer(0x06)
+            buf = self.spi.xfer([0x06])[0]
             raw.append(buf)
         for i in range(16):
             self.hist.append(byte_to_int16(raw[i*2], raw[i*2+1]))
