@@ -7,7 +7,10 @@ class MavlinkConnection(object):
     An object to represent a connection with an FC via the MAVLINK protocol
     """
     def __init__(self, port, baudrate):
-        self.got_raw_imu = 0
+        self.start_date = []
+        self.start_time = []
+        self.all_data_received = 0
+        self.got_system_time = 0
         self.got_global_position_int = 0
         self.got_scaled_pressure = 0
         self.master = mavutil.mavlink_connection(port, baud=baudrate)
@@ -19,10 +22,11 @@ class MavlinkConnection(object):
         self.vz_ms = 0
         self.press_hPa = 0
         self.epoch_time = 0
+        self.boot_time = 0
         self.master.mav.request_data_stream_send(self.master.target_system, self.master.target_component,
-                                                 mavutil.mavlink.MAV_DATA_STREAM_POSITION, 40, 1)
+                                                 mavutil.mavlink.MAV_DATA_STREAM_POSITION, 100, 1)
         self.master.mav.request_data_stream_send(self.master.target_system, self.master.target_component,
-                                                 mavutil.mavlink.MAV_DATA_STREAM_RAW_SENSORS, 40, 1)
+                                                 mavutil.mavlink.MAV_DATA_STREAM_RAW_SENSORS, 100, 1)
 
     def wait_for_connection(self):
         msg = None
@@ -48,15 +52,36 @@ class MavlinkConnection(object):
         if msg_type == "SCALED_PRESSURE":
             self.got_scaled_pressure = 1
             self.press_hPa = msg.press_abs
-        if msg_type == "RAW_IMU":
-            self.got_raw_imu = 1
-            self.epoch_time = msg.time_usec
+        if msg_type == "SYSTEM_TIME":
+            self.got_system_time = 1
+            self.boot_time = msg.time_boot_ms
+            self.epoch_time = msg.time_unix_usec
 
     def fill_info_buffer(self):
         timeout = 0
         while True:
             timeout = timeout+1
             self.data_packet_handler()
-            check = self.got_raw_imu * self.got_scaled_pressure * self.got_global_position_int
-            if (check == 1) | (timeout == 60):
+            check = self.got_system_time * self.got_scaled_pressure * self.got_global_position_int
+            if check == 1:
+                self.all_data_received = 1
+                self.got_global_position_int = 0
+                self.got_scaled_pressure = 0
+                self.got_system_time = 0
                 break
+            elif timeout == 60:
+                self.all_data_received = 0
+                break
+            else:
+                time.sleep(0.01)
+
+    def get_date_time(self):
+        while True:
+            self.fill_info_buffer()
+            if self.epoch_time != 0:
+                break
+        epoch_sec = self.epoch_time/1000000
+        date_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(int(epoch_sec)))
+        date_time = date_time.split()
+        self.start_date = date_time[0]
+        self.start_time = date_time[1]

@@ -37,11 +37,13 @@ class LogFile(object):
         log.flush()
         log.close()
 
-    def make_headers(self, date, time, info_str, bbs, gsc, ucass_id):
+    def make_headers(self, date, time, epoch, info_str, bbs, gsc, ucass_id):
         log = open(self.name, "a+")
         log.write(date)
         log.write(',')
         log.write(time)
+        log.write(',')
+        log.write(epoch)
         log.write('\n')
         log.write(info_str)
         log.write('\n')
@@ -53,7 +55,7 @@ class LogFile(object):
         log.write(',')
         log.write(str(ucass_id))
         log.write('\n')
-        log.write("time,temp,hum,pres,lat,lon,alt,vz,b1,b2,b3,b4,b5,b6,b7,b8,b9,b10,b11,b12,b13,b14,b15,b1ToF,b3ToF"
+        log.write("time,pres,lat,lon,alt,vz,temp,hum,b1,b2,b3,b4,b5,b6,b7,b8,b9,b10,b11,b12,b13,b14,b15,b1ToF,b3ToF"
                   ",b7ToF,period,CSum,glitch,longToF,RejRat\n")
         log.flush()
         log.close()

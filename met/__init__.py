@@ -36,10 +36,14 @@ class MetSensorModule(object):
         self.cal_hih4000(convert_raw_mcp(bytes_received))
 
     def cal_fp07da802n(self, adc):
-        vt = adc*self.v_sup/(2**12-1)
-        rt = 1/(1/((8.2*self.v_sup)/vt-8.2)-1/47)
-        rt_norm = rt/8
-        self.t_deg_c = np.interp(rt_norm, lut[:, 1], lut[:, 0])
+        try:
+            vt = adc*self.v_sup/(2**12-1)
+            rt = 1/(1/((8.2*self.v_sup)/vt-8.2)-1/47)
+            rt_norm = rt/8
+            self.t_deg_c = np.interp(rt_norm, lut[:, 1], lut[:, 0])
+        except ZeroDivisionError:
+            print("Met Module Not Connected")
+            pass
 
     def cal_hih4000(self, adc):
         vh = adc*self.v_sup/(2**12-1)

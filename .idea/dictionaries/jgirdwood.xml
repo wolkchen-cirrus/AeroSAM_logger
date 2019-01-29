@@ -8,6 +8,7 @@
       <w>gpiozero</w>
       <w>jgirdwood</w>
       <w>ltof</w>
+      <w>mavcon</w>
       <w>mavlink</w>
       <w>mtof</w>
       <w>readdata</w>
