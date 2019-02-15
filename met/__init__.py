@@ -4,7 +4,7 @@ from numpy import genfromtxt
 import numpy as np
 
 
-lut = genfromtxt('FP07DA802N_A5_LUT.txt', delimiter=',')
+lut = genfromtxt('/home/pi/FP07DA802N_A5_LUT.txt', delimiter=',')
 lut = np.flipud(lut)
 
 
@@ -37,8 +37,8 @@ class MetSensorModule(object):
 
     def cal_fp07da802n(self, adc):
         try:
-            vt = adc*self.v_sup/(2**12-1)
-            rt = 1/(1/((8.2*self.v_sup)/vt-8.2)-1/47)
+            vt = adc*float(self.v_sup)/(2**12-1)
+            rt = 1/(1/((8.2*float(self.v_sup))/vt-8.2)-1/47)
             rt_norm = rt/8
             self.t_deg_c = np.interp(rt_norm, lut[:, 1], lut[:, 0])
         except ZeroDivisionError:
@@ -46,7 +46,7 @@ class MetSensorModule(object):
             pass
 
     def cal_hih4000(self, adc):
-        vh = adc*self.v_sup/(2**12-1)
+        vh = adc*float(self.v_sup)/(2**12-1)
         rh_sens = (vh/self.v_sup-0.16)/0.0062
         self.rh_true = rh_sens/(1.0546-0.00216*self.t_deg_c)
 

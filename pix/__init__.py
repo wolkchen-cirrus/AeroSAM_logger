@@ -24,9 +24,7 @@ class MavlinkConnection(object):
         self.epoch_time = 0
         self.boot_time = 0
         self.master.mav.request_data_stream_send(self.master.target_system, self.master.target_component,
-                                                 mavutil.mavlink.MAV_DATA_STREAM_POSITION, 100, 1)
-        self.master.mav.request_data_stream_send(self.master.target_system, self.master.target_component,
-                                                 mavutil.mavlink.MAV_DATA_STREAM_RAW_SENSORS, 100, 1)
+                                                 mavutil.mavlink.MAV_DATA_STREAM_ALL, 100, 1)
 
     def wait_for_connection(self):
         msg = None

@@ -43,7 +43,7 @@ class LogFile(object):
         log.write(',')
         log.write(time)
         log.write(',')
-        log.write(epoch)
+        log.write(str(epoch))
         log.write('\n')
         log.write(info_str)
         log.write('\n')

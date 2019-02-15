@@ -14,7 +14,7 @@ if __name__ == '__main__':
     mavcon = pix.MavlinkConnection('/dev/ttyS0', 57600)
     print("Mavlink Connected")
     mavcon.get_date_time()
-    name_string = ["AeroSAM_log_", mavcon.start_date, "_", mavcon.start_time]
+    name_string = "_".join(["AeroSAM-log", mavcon.start_date, mavcon.start_time])
     sd_log = log.LogFile(name_string, "/home/pi")
     print("".join(["Log File: ", name_string]))
     met_module = met.MetSensorModule(23, 24, 4)
@@ -23,6 +23,7 @@ if __name__ == '__main__':
     ss.read_config_vars()
     sd_log.make_headers(mavcon.start_date, mavcon.start_time, int(mavcon.epoch_time/1000), ss.info_string,
                         ss.bbs, ss.gsc, ss.id)
+    t0 = mavcon.boot_time
     while True:
         mavcon.get_date_time()
         t1 = mavcon.boot_time
@@ -40,6 +41,6 @@ if __name__ == '__main__':
             sleep(delay_ms/1000)
         else:
             print("Loop Time Exceeds Resolution")
-        if (run_forever == False) & (mavcon.boot_time > run_time*1000):
+        if (not run_forever) & ((mavcon.boot_time-t0) > run_time*1000):
             print("Loop Finished")
             break
