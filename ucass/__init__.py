@@ -32,11 +32,13 @@ class UCASS(object):
 
     def command_byte(self, command):
         self.cs.off()
-        self.spi.xfer(command)
+        a = self.spi.xfer(command)
         sleep(0.01)
+        return a
 
     def read_info_string(self):
-        self.command_byte([0x3F])
+        self.info_string = ""
+        a = self.command_byte([0x3F])
         for i in range(60):
             sleep(0.00001)
             buf = self.spi.xfer([0x06])[0]

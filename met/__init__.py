@@ -25,20 +25,20 @@ class MetSensorModule(object):
 
     def read_temp(self):
         self.temp_cs.off()
-        bytes_received = self.spi.xfer2([0x00, 0x00, 0x00, 0x00])
+        bytes_received = self.spi.xfer2([0x00, 0x00])
         self.temp_cs.on()
         self.cal_fp07da802n(convert_raw_mcp(bytes_received))
 
     def read_hum(self):
         self.hum_cs.off()
-        bytes_received = self.spi.xfer2([0x00, 0x00, 0x00, 0x00])
+        bytes_received = self.spi.xfer2([0x00, 0x00])
         self.hum_cs.on()
         self.cal_hih4000(convert_raw_mcp(bytes_received))
 
     def cal_fp07da802n(self, adc):
         try:
             vt = adc*float(self.v_sup)/(2**12-1)
-            rt = 1/(1/((8.2*float(self.v_sup))/vt-8.2)-1/47)
+            rt = 1/(1/((8.2*self.v_sup)/vt-8.2)-1/47)
             rt_norm = rt/8
             self.t_deg_c = np.interp(rt_norm, lut[:, 1], lut[:, 0])
         except ZeroDivisionError:
@@ -52,13 +52,8 @@ class MetSensorModule(object):
 
 
 def convert_raw_mcp(byte_arr):
-    lsb_0 = byte_arr[1] & 0b00000011
-    lsb_0 = bin(lsb_0)[2:].zfill(2)
-    lsb_1 = byte_arr[2]
-    lsb_1 = bin(lsb_1)[2:].zfill(8)
-    lsb_2 = byte_arr[3]
-    lsb_2 = bin(lsb_2)[2:].zfill(8)
-    lsb_2 = lsb_2[0:2]
-    lsb = lsb_0 + lsb_1 + lsb_2
-    lsb = lsb[::-1]
-    return int(lsb, base=2)
+    msb = byte_arr[1]
+    msb = msb >> 1
+    lsb = byte_arr[0] & 0b00011111
+    lsb = lsb << 7
+    return lsb + msb

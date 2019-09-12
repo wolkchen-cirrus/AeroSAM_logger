@@ -32,6 +32,7 @@ class LogFile(object):
         data_array = [time, pres, lat, lon, alt, vz, temp, hum, counts, tof, period, c_sum, glitch, l_tof, rej_rat]
         log = open(self.name, "a+")
         data_array = ",".join(str(i) for i in data_array)
+        data_array = data_array.replace("]", "").replace("[", "")
         log.write(data_array)
         log.write('\n')
         log.flush()
@@ -49,6 +50,7 @@ class LogFile(object):
         log.write('\n')
         log.write("bb0,bb1,bb2,bb3,bb4,bb5,bb6,bb7,bb8,bb9,bb10,bb11,bb12,bb13,bb14,bb15,GSC,ID\n")
         bb_str = ",".join(str(i) for i in bbs)
+        bb_str = bb_str.replace("]", "").replace("[", "")
         log.write(bb_str)
         log.write(',')
         log.write(str(gsc))
