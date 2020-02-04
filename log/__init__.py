@@ -48,7 +48,7 @@ class LogFile(object):
         log.write('\n')
         log.write(info_str)
         log.write('\n')
-        log.write("bb0,bb1,bb2,bb3,bb4,bb5,bb6,bb7,bb8,bb9,bb10,bb11,bb12,bb13,bb14,bb15,GSC,ID\n")
+        log.write("ub0,ub1,ub2,ub3,ub4,ub5,ub6,ub7,ub8,ub9,ub10,ub11,ub12,ub13,ub14,ub15,ub16,GSC,ID\n")
         bb_str = ",".join(str(i) for i in bbs)
         bb_str = bb_str.replace("]", "").replace("[", "")
         log.write(bb_str)
@@ -57,7 +57,7 @@ class LogFile(object):
         log.write(',')
         log.write(str(ucass_id))
         log.write('\n')
-        log.write("time,pres,lat,lon,alt,vz,temp,hum,b1,b2,b3,b4,b5,b6,b7,b8,b9,b10,b11,b12,b13,b14,b15,b1ToF,b3ToF"
-                  ",b7ToF,period,CSum,glitch,longToF,RejRat\n")
+        log.write("time,pres,lat,lon,alt,vz,temp,hum,b1,b2,b3,b4,b5,b6,b7,b8,b9,b10,b11,b12,b13,b14,b15,b16,b1ToF,b3ToF"
+                  ",b5ToF,b7ToF,period,CSum,glitch,longToF,RejRat\n")
         log.flush()
         log.close()
